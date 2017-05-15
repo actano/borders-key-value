@@ -12,9 +12,9 @@ import {
   KeyNotFoundError,
 } from '../commands'
 
-export default (backend) => {
+export default (createBackend) => {
   const execute = generatorFunction => () => {
-    const context = new Context().use(backend)
+    const context = new Context().use(createBackend())
     return context.execute(generatorFunction())
   }
 
