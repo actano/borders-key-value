@@ -1,3 +1,3 @@
-# borders
+# borders-key-value
 
-Simple framework for abstraction of system borders
+Specification for system border key-value store
