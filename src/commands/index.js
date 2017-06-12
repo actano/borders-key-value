@@ -1,5 +1,5 @@
-export { default as get, TYPE as GET, KeyNotFoundError } from './get'
-export { default as insert, TYPE as INSERT, KeyAlreadyExistsError } from './insert'
+export { default as get, TYPE as GET } from './get'
+export { default as insert, TYPE as INSERT } from './insert'
 export { default as remove, TYPE as REMOVE } from './remove'
 export { default as replace, TYPE as REPLACE } from './replace'
 export { default as upsert, TYPE as UPSERT } from './upsert'

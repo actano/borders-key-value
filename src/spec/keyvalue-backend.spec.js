@@ -8,9 +8,12 @@ import {
   remove,
   replace,
   upsert,
+} from '../commands'
+
+import {
   KeyAlreadyExistsError,
   KeyNotFoundError,
-} from '../commands'
+} from '../errors'
 
 export default (createBackend) => {
   const execute = generatorFunction => () => {

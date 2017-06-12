@@ -4,9 +4,12 @@ import {
   INSERT,
   REPLACE,
   UPSERT,
+} from '../commands'
+
+import {
   KeyNotFoundError,
   KeyAlreadyExistsError,
-} from '../commands'
+} from '../errors'
 
 export default () => {
   const store = {}
