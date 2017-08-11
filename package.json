@@ -28,7 +28,6 @@
     "babel-plugin-transform-async-generator-functions": "^6.24.1",
     "babel-preset-env": "^1.4.0",
     "babel-register": "^6.24.1",
-    "borders": "^1.0.2",
     "chai": "^4.0.2",
     "eslint": "^4.3.0",
     "eslint-config-actano-base": "^2.1.0",
@@ -36,5 +35,8 @@
     "mocha": "^3.3.0",
     "sinon": "^2.2.0",
     "sinon-chai": "^2.10.0"
+  },
+  "dependencies": {
+    "borders": "^1.2.2"
   }
 }
