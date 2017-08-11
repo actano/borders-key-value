@@ -675,9 +675,9 @@ boom@2.x.x:
   dependencies:
     hoek "2.x.x"
 
-borders@^1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/borders/-/borders-1.2.2.tgz#2971c4852cc6dca2c881a3a7efe9c35aca8da233"
+borders@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/borders/-/borders-1.3.0.tgz#8ab8e6a8f51ad00f5b4b0067e68d3fb5fb017457"
   dependencies:
     p-map "^1.1.1"
 
@@ -2328,7 +2328,7 @@ sinon-chai@^2.10.0:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/sinon-chai/-/sinon-chai-2.11.0.tgz#93d90f989fff67ce45767077ffe575dde1faea6d"
 
-sinon@3.2.0:
+sinon@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/sinon/-/sinon-3.2.0.tgz#8848a66ab6e8b80b5532e3824f59f83ea2628c77"
   dependencies:
