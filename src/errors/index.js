@@ -14,11 +14,3 @@ export class KeyAlreadyExistsError extends Error {
 }
 
 KeyAlreadyExistsError.prototype.name = 'KeyAlreadyExistsError'
-
-export class EntityConflictError extends Error {
-  constructor(key) {
-    super(String(key))
-  }
-}
-
-EntityConflictError.prototype.name = 'EntityConflictError'
