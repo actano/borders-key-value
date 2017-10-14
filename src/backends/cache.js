@@ -17,10 +17,11 @@ export default (backend) => {
   }
 
   return Object.assign({}, backend, {
-    [GET](key) {
+    [GET](payload) {
+      const { key } = payload
       let value = cache[key]
       if (!value) {
-        cache[key] = backend[GET](key)
+        cache[key] = backend[GET](payload)
         value = cache[key]
         if (isPromise(value)) {
           return value.then((v) => {
@@ -32,8 +33,9 @@ export default (backend) => {
       return value
     },
 
-    [REMOVE](key) {
-      return promisedUpdate(key, null, backend[REMOVE](key))
+    [REMOVE](payload) {
+      const { key } = payload
+      return promisedUpdate(key, null, backend[REMOVE](payload))
     },
 
     [INSERT](payload) {

@@ -15,13 +15,13 @@ export default () => {
   const store = {}
 
   return {
-    [GET](key) {
+    [GET]({ key }) {
       const value = store[key]
       if (!value) throw new KeyNotFoundError(key)
       return value
     },
 
-    [REMOVE](key) {
+    [REMOVE]({ key }) {
       store[key] = null
     },
 
