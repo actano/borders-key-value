@@ -6,6 +6,7 @@
   "license": "MIT",
   "main": "lib/index.js",
   "module": "src/index.js",
+  "jsnext:main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/actano/borders-key-value.git"
