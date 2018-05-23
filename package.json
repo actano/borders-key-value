@@ -1,6 +1,6 @@
 {
   "name": "borders-key-value",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Specification for system border key-value store",
   "author": "Actano GmbH (https://rplan.com/)",
   "license": "MIT",
