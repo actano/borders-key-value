@@ -736,11 +736,9 @@ boom@2.x.x:
   dependencies:
     hoek "2.x.x"
 
-borders@^1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/borders/-/borders-1.6.0.tgz#60f52ff12fd8a9d3e15405aafe0a7d0d00b5bb4a"
-  dependencies:
-    p-map "^1.1.1"
+borders@^2.0.0-beta.1:
+  version "2.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/borders/-/borders-2.0.0-beta.1.tgz#1d8e61be7fd1018894f30062d468f1e2d990b9f6"
 
 brace-expansion@^1.1.7:
   version "1.1.8"
@@ -2508,10 +2506,6 @@ p-locate@^2.0.0:
   resolved "https://registry.yarnpkg.com/p-locate/-/p-locate-2.0.0.tgz#20a0103b222a70c8fd39cc2e580680f3dde5ec43"
   dependencies:
     p-limit "^1.1.0"
-
-p-map@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/p-map/-/p-map-1.1.1.tgz#05f5e4ae97a068371bc2a5cc86bfbdbc19c4ae7a"
 
 parse-glob@^3.0.4:
   version "3.0.4"

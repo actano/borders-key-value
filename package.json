@@ -29,7 +29,7 @@
     "babel-plugin-transform-async-generator-functions": "^6.24.1",
     "babel-preset-env": "^1.4.0",
     "babel-register": "^6.24.1",
-    "borders": "^1.6.0",
+    "borders": "^2.0.0-beta.1",
     "chai": "^4.0.2",
     "eslint": "^5.0.1",
     "eslint-config-actano-base": "^3.0.0",
@@ -39,6 +39,6 @@
     "sinon-chai": "^3.0.0"
   },
   "peerDependencies": {
-    "borders": "^1.6.0"
+    "borders": "^2.0.0-beta.1"
   }
 }
