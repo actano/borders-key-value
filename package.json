@@ -24,11 +24,11 @@
     "clean": "rm -rf lib"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-plugin-add-module-exports": "^1.0.0",
-    "babel-plugin-transform-async-generator-functions": "^6.24.1",
-    "babel-preset-env": "^1.4.0",
-    "babel-register": "^6.24.1",
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/node": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/register": "^7.0.0",
     "borders": "^2.0.0-beta.2",
     "chai": "^4.0.2",
     "eslint": "^5.0.1",

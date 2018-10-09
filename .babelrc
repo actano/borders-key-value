@@ -1,12 +1,8 @@
 {
-  "plugins": [
-    "add-module-exports",
-    "transform-async-generator-functions"
-  ],
   "presets": [
-    ["env", {
+    ["@babel/env", {
       "targets": {
-        "node": 6
+        "node": "current"
       }
     }]
   ]
