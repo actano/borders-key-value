@@ -1,5 +1,3 @@
-import { CREATE_INITIAL_CONTEXT } from 'borders'
-
 import { CACHED, CACHE_STATS, GET, INSERT, REMOVE, REPLACE, UPSERT } from '../commands'
 import { isPromise } from '../utils'
 
@@ -69,7 +67,7 @@ class State {
   }
 }
 
-export default backend => ({
+export default backend => Object.assign(new State(), {
   async [CACHED](payload, ctx) {
     const { key, calculator } = payload
     if (this.cache[key]) {
@@ -116,9 +114,5 @@ export default backend => ({
   [CACHE_STATS]() {
     const { hits, misses, evicts } = this.stats
     return { hits, misses, evicts }
-  },
-
-  [CREATE_INITIAL_CONTEXT]() {
-    return new State()
   },
 })
