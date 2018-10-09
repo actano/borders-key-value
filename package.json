@@ -29,16 +29,15 @@
     "babel-plugin-transform-async-generator-functions": "^6.24.1",
     "babel-preset-env": "^1.4.0",
     "babel-register": "^6.24.1",
-    "borders": "^2.0.0-beta.1",
+    "borders": "^2.0.0-beta.2",
     "chai": "^4.0.2",
     "eslint": "^5.0.1",
     "eslint-config-actano-base": "^3.0.0",
     "eslint-plugin-import": "^2.7.0",
     "mocha": "^5.0.1",
-    "sinon": "^6.0.1",
-    "sinon-chai": "^3.0.0"
+    "sinon": "^6.0.1"
   },
   "peerDependencies": {
-    "borders": "^2.0.0-beta.1"
+    "borders": "^2.0.0-beta.2"
   }
 }
