@@ -15,20 +15,17 @@ describe('borders-key-value/cache-backend', () => {
 
   let store
   let getSpy
-  let backend
 
   const insertDirectly = (key, val) => {
     const { type, payload } = insert(key, val)
     return store[type](payload)
   }
 
-  const executeCommand = command => backend[command.type](command.payload)
+  const testCache = (createBackends) => {
+    testBackend(createBackends)
 
-  const execute = generatorFunction => async () =>
-    await new Context().use(backend).execute(generatorFunction())
-
-  const testCache = () => {
-    testBackend(() => backend)
+    const execute = generatorFunction => async () =>
+      await new Context().use(...createBackends()).execute(generatorFunction())
 
     it('should call store only once if get called two times', execute(function* test() {
       insertDirectly(ID, value)
@@ -50,23 +47,10 @@ describe('borders-key-value/cache-backend', () => {
   })
 
   describe('with sync backend', () => {
-    beforeEach(() => {
-      backend = cacheBackend(store)
-    })
-
-    testCache()
+    testCache(() => [cacheBackend(), store])
   })
 
   describe('with async backend', () => {
-    beforeEach(() => {
-      backend = cacheBackend(asyncBackend(store))
-    })
-
-    testCache()
-
-    it('should get a cache hit synchronous', async () => {
-      await executeCommand(insert(ID, value))
-      expect(executeCommand(get(ID))).to.equal(value)
-    })
+    testCache(() => [cacheBackend(), asyncBackend(store)])
   })
 })

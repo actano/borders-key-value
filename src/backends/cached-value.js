@@ -67,7 +67,7 @@ class State {
   }
 }
 
-export default backend => Object.assign(new State(), {
+export default backend => Object.assign(Object.create(new State()), {
   async [CACHED](payload, ctx) {
     const { key, calculator } = payload
     if (this.cache[key]) {

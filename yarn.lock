@@ -827,10 +827,10 @@ binary-extensions@^1.0.0:
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-1.12.0.tgz#c2d780f53d45bba8317a8902d4ceeaf3a6385b14"
   integrity sha512-DYWGk01lDcxeS/K9IHPGWfT8PsJmbXRtRd2Sx72Tnb8pcYZQFF1oSDb8hJtS1vhp212q1Rzi5dUf9+nq0o9UIg==
 
-borders@^2.0.0-beta.2:
-  version "2.0.0-beta.2"
-  resolved "https://registry.yarnpkg.com/borders/-/borders-2.0.0-beta.2.tgz#3ceaa018677377254be8464514cc5657411aefe3"
-  integrity sha512-wOKdFM9J3SWI6CHuOayTmUaB4V/FlRr/bipXOVMutsO2KTlQHVhPWhZZmK7jL8JoKyCKvD3hZnE5mOhN3Y6b7Q==
+borders@^2.0.0-beta.3:
+  version "2.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/borders/-/borders-2.0.0-beta.3.tgz#44af57c1bc198b97b1719d91182d9ab7058813be"
+  integrity sha512-73D92+PgH0+LopYRnH9osuLTrp1sbvDeCJZnlEdVidY1RhGye0V93MmQyX2F6cbwQCFXlqnEKOs2mEHRGjIfng==
 
 brace-expansion@^1.1.7:
   version "1.1.11"

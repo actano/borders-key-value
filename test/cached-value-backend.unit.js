@@ -18,7 +18,7 @@ describe('borders-key-value/cached-value-backend', () => {
   const execute = generatorFunction => () =>
     new Context().use(backend).execute(generatorFunction())
 
-  testBackend(() => backend)
+  testBackend(() => [backend])
 
   function* square(key) {
     const value = yield get(key)
