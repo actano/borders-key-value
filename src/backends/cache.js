@@ -1,5 +1,5 @@
 import { GET, REMOVE, INSERT, REPLACE, UPSERT } from '../commands'
-import { isPromise } from '../utils'
+import { assertNoArgs, isPromise } from '../utils'
 
 class CacheBackend {
   constructor() {
@@ -55,4 +55,4 @@ class CacheBackend {
   }
 }
 
-export default () => new CacheBackend()
+export default assertNoArgs(() => new CacheBackend())
