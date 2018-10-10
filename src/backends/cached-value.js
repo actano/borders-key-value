@@ -12,7 +12,7 @@ class State {
     }
   }
 
-  markTouched(payload) {
+  _markTouched(payload) {
     if (this.used) {
       throw new Error('Cannot modify KV store in a cache-calculation')
     }
@@ -30,20 +30,20 @@ class State {
     }
   }
 
-  markHit(key) {
+  _markHit(key) {
     this.stats.hits += 1
     if (!this.used || !this.cache[key]) return
     const { deps } = this.cache[key]
     if (deps) Object.assign(this.used, deps)
   }
 
-  markRead(payload) {
+  _markRead(payload) {
     if (!this.used) return
     const { key } = payload
     this.used[key] = true
   }
 
-  * calculate(calculator, key) {
+  * _calculate(calculator, key) {
     this.stats.misses += 1
     const value = yield* calculator(key)
     const entry = {
@@ -71,7 +71,7 @@ export default backend => Object.assign(Object.create(new State()), {
   async [CACHED](payload, ctx) {
     const { key, calculator } = payload
     if (this.cache[key]) {
-      this.markHit(key)
+      this._markHit(key)
       return this.cache[key].value
     }
     const subcontext = Object.create(this, {
@@ -79,7 +79,7 @@ export default backend => Object.assign(Object.create(new State()), {
         value: {},
       },
     })
-    const result = await ctx.execute(subcontext.calculate(calculator, key), subcontext)
+    const result = await ctx.execute(subcontext._calculate(calculator, key), subcontext)
     if (this.used) {
       Object.assign(this.used, subcontext.used)
     }
@@ -87,27 +87,27 @@ export default backend => Object.assign(Object.create(new State()), {
   },
 
   [GET](payload) {
-    this.markRead(payload)
+    this._markRead(payload)
     return backend[GET](payload)
   },
 
   [REMOVE](payload) {
-    this.markTouched(payload)
+    this._markTouched(payload)
     return backend[REMOVE](payload)
   },
 
   [INSERT](payload) {
-    this.markTouched(payload)
+    this._markTouched(payload)
     return backend[INSERT](payload)
   },
 
   [REPLACE](payload) {
-    this.markTouched(payload)
+    this._markTouched(payload)
     return backend[REPLACE](payload)
   },
 
   [UPSERT](payload) {
-    this.markTouched(payload)
+    this._markTouched(payload)
     return backend[UPSERT](payload)
   },
 

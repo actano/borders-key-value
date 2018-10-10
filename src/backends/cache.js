@@ -1,12 +1,12 @@
 import { GET, REMOVE, INSERT, REPLACE, UPSERT } from '../commands'
 import { isPromise } from '../utils'
 
-class State {
+class CacheBackend {
   constructor() {
     this.cache = {}
   }
 
-  promisedUpdate(key, value, result) {
+  _promisedUpdate(key, value, result) {
     if (!isPromise(result)) {
       this.cache[key] = value
       return result
@@ -17,9 +17,7 @@ class State {
       return returnValue
     })
   }
-}
 
-export default () => Object.assign(Object.create(new State()), {
   [GET](payload, { next }) {
     const { key } = payload
     let value = this.cache[key]
@@ -34,25 +32,27 @@ export default () => Object.assign(Object.create(new State()), {
       }
     }
     return value
-  },
+  }
 
   [REMOVE](payload, { next }) {
     const { key } = payload
-    return this.promisedUpdate(key, null, next())
-  },
+    return this._promisedUpdate(key, null, next())
+  }
 
   [INSERT](payload, { next }) {
     const { key, value } = payload
-    return this.promisedUpdate(key, value, next())
-  },
+    return this._promisedUpdate(key, value, next())
+  }
 
   [REPLACE](payload, { next }) {
     const { key, value } = payload
-    return this.promisedUpdate(key, value, next())
-  },
+    return this._promisedUpdate(key, value, next())
+  }
 
   [UPSERT](payload, { next }) {
     const { key, value } = payload
-    return this.promisedUpdate(key, value, next())
-  },
-})
+    return this._promisedUpdate(key, value, next())
+  }
+}
+
+export default () => new CacheBackend()
