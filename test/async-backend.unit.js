@@ -15,7 +15,7 @@ describe('borders-key-value/async-backend', () => {
       }
 
       context = new Context()
-      context.use(asyncBackend(baseBackend))
+      context.use(asyncBackend(baseBackend), baseBackend)
     })
 
     it('should return the same value as the base backend', async () => {
@@ -40,7 +40,7 @@ describe('borders-key-value/async-backend', () => {
       }
 
       context = new Context()
-      context.use(asyncBackend(baseBackend))
+      context.use(asyncBackend(baseBackend), baseBackend)
     })
 
     it('should trigger the same side-effects as the base backend', async () => {
@@ -64,7 +64,7 @@ describe('borders-key-value/async-backend', () => {
       }
 
       context = new Context()
-      context.use(asyncBackend(baseBackend))
+      context.use(asyncBackend(baseBackend), baseBackend)
     })
 
     it('should return the resolved value', async () => {

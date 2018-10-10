@@ -1,4 +1,3 @@
-/* eslint-disable no-return-await */
 import { expect } from 'chai'
 import { spy } from 'sinon'
 import Context from 'borders'
@@ -24,8 +23,8 @@ describe('borders-key-value/cache-backend', () => {
   const testCache = (createBackends) => {
     testBackend(createBackends)
 
-    const execute = generatorFunction => async () =>
-      await new Context().use(...createBackends()).execute(generatorFunction())
+    const execute = generatorFunction => () =>
+      new Context().use(...createBackends()).execute(generatorFunction())
 
     it('should call store only once if get called two times', execute(function* test() {
       insertDirectly(ID, value)
@@ -51,6 +50,6 @@ describe('borders-key-value/cache-backend', () => {
   })
 
   describe('with async backend', () => {
-    testCache(() => [cacheBackend(), asyncBackend(store)])
+    testCache(() => [cacheBackend(), asyncBackend(store), store])
   })
 })

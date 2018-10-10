@@ -1,21 +1,10 @@
-import { isPromise } from '../utils'
-
-const promisify = fn => (...args) => {
-  let result
-  try {
-    result = fn(...args)
-  } catch (e) {
-    return Promise.reject(e)
-  }
-  if (isPromise(result)) return result
-  return Promise.resolve(result)
-}
+import { getCommands } from 'borders'
 
 export default (backend) => {
   const result = {}
 
-  for (const op of Object.keys(backend)) {
-    result[op] = promisify(backend[op])
+  for (const op of getCommands(backend)) {
+    result[op] = async (payload, { next }) => Promise.resolve(next())
   }
 
   return result
