@@ -17,7 +17,8 @@
     "spec.js"
   ],
   "scripts": {
-    "prepublishOnly": "npm run clean && npm run ci && babel src --out-dir lib",
+    "prepublishOnly": "npm run clean && npm run ci && npm run build",
+    "build": "babel src --out-dir lib",
     "ci": "npm run lint && npm test",
     "test": "mocha",
     "lint": "eslint src test",
