@@ -16,9 +16,9 @@ describe('borders-key-value/cached-value-backend', () => {
   let addedSquareSpy
 
   const execute = generatorFunction => () =>
-    new Context().use(backend).execute(generatorFunction())
+    new Context().use(backend, store).execute(generatorFunction())
 
-  testBackend(() => [backend])
+  testBackend(() => [backend, store])
 
   function* square(key) {
     const value = yield get(key)
@@ -33,7 +33,7 @@ describe('borders-key-value/cached-value-backend', () => {
 
   beforeEach(() => {
     store = inMemory()
-    backend = cachedValueBackend(store)
+    backend = cachedValueBackend()
     squareSpy = spy(square)
     addedSquareSpy = spy(addedSquare)
   })

@@ -1,4 +1,4 @@
-import { getCommands } from 'borders'
+import getCommands from 'borders/get-commands'
 
 export default (backend) => {
   const result = {}

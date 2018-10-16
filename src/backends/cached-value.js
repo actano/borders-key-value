@@ -1,5 +1,5 @@
 import { CACHED, CACHE_STATS, GET, INSERT, REMOVE, REPLACE, UPSERT } from '../commands'
-import { isPromise } from '../utils'
+import { assertNoArgs, isPromise } from '../utils'
 
 class State {
   constructor() {
@@ -67,7 +67,7 @@ class State {
   }
 }
 
-export default backend => Object.assign(Object.create(new State()), {
+export default assertNoArgs(() => Object.assign(Object.create(new State()), {
   async [CACHED](payload, ctx) {
     const { key, calculator } = payload
     if (this.cache[key]) {
@@ -86,33 +86,33 @@ export default backend => Object.assign(Object.create(new State()), {
     return result
   },
 
-  [GET](payload) {
+  [GET](payload, { next }) {
     this._markRead(payload)
-    return backend[GET](payload)
+    return next()
   },
 
-  [REMOVE](payload) {
+  [REMOVE](payload, { next }) {
     this._markTouched(payload)
-    return backend[REMOVE](payload)
+    return next()
   },
 
-  [INSERT](payload) {
+  [INSERT](payload, { next }) {
     this._markTouched(payload)
-    return backend[INSERT](payload)
+    return next()
   },
 
-  [REPLACE](payload) {
+  [REPLACE](payload, { next }) {
     this._markTouched(payload)
-    return backend[REPLACE](payload)
+    return next()
   },
 
-  [UPSERT](payload) {
+  [UPSERT](payload, { next }) {
     this._markTouched(payload)
-    return backend[UPSERT](payload)
+    return next()
   },
 
   [CACHE_STATS]() {
     const { hits, misses, evicts } = this.stats
     return { hits, misses, evicts }
   },
-})
+}))
