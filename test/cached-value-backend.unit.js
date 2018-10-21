@@ -1,7 +1,7 @@
 import Context from 'borders'
 import { expect } from 'chai'
 import { spy } from 'sinon'
-import cachedValueBackend from '../src/backends/cached-value'
+import CachedValueBackend from '../src/backends/cached-value'
 import inMemory from '../src/backends/memory'
 import { get, insert, replace, cached, cacheStats } from '../src/commands'
 
@@ -30,7 +30,7 @@ describe('borders-key-value/cached-value-backend', () => {
 
   beforeEach(() => {
     store = inMemory()
-    backend = cachedValueBackend()
+    backend = new CachedValueBackend()
     squareSpy = spy(square)
     addedSquareSpy = spy(addedSquare)
   })

@@ -7,7 +7,7 @@ const MARK_READ = '_markRead'
 const MARK_TOUCHED = '_markTouched'
 const MARK_IGNORE = '_markIgnore'
 
-class CachedValue {
+export default class CachedValue {
   constructor() {
     this.cache = {}
     this.deps = {}
@@ -112,5 +112,3 @@ class CachedValue {
     }
   }
 }
-
-export default () => new CachedValue()
