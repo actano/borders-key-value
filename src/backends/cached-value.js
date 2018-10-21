@@ -1,5 +1,11 @@
+import { EVENT_INVOKE } from 'borders'
+import { listenerName } from 'borders/backends'
 import { CACHED, CACHE_STATS, GET, INSERT, REMOVE, REPLACE, UPSERT } from '../commands'
 import { isPromise } from '../utils'
+
+const MARK_READ = '_markRead'
+const MARK_TOUCHED = '_markTouched'
+const MARK_IGNORE = '_markIgnore'
 
 class CachedValue {
   constructor() {
@@ -10,9 +16,18 @@ class CachedValue {
       misses: 0,
       evicts: 0,
     }
+    this.mark = {
+      [GET]: MARK_READ,
+      [REMOVE]: MARK_TOUCHED,
+      [INSERT]: MARK_TOUCHED,
+      [REPLACE]: MARK_TOUCHED,
+      [UPSERT]: MARK_TOUCHED,
+      [CACHED]: MARK_IGNORE,
+      [CACHE_STATS]: MARK_IGNORE,
+    }
   }
 
-  _markTouched(payload) {
+  [MARK_TOUCHED](payload) {
     if (this.used) {
       throw new Error('Cannot modify KV store in a cache-calculation')
     }
@@ -37,7 +52,7 @@ class CachedValue {
     if (deps) Object.assign(this.used, deps)
   }
 
-  _markRead(payload) {
+  [MARK_READ](payload) {
     if (!this.used) return
     const { key } = payload
     this.used[key] = true
@@ -84,34 +99,17 @@ class CachedValue {
     return result
   }
 
-  [GET](payload, { next }) {
-    this._markRead(payload)
-    return next()
-  }
-
-  [REMOVE](payload, { next }) {
-    this._markTouched(payload)
-    return next()
-  }
-
-  [INSERT](payload, { next }) {
-    this._markTouched(payload)
-    return next()
-  }
-
-  [REPLACE](payload, { next }) {
-    this._markTouched(payload)
-    return next()
-  }
-
-  [UPSERT](payload, { next }) {
-    this._markTouched(payload)
-    return next()
-  }
-
   [CACHE_STATS]() {
     const { hits, misses, evicts } = this.stats
     return { hits, misses, evicts }
+  }
+
+  [listenerName(EVENT_INVOKE)](type, payload) {
+    const mark = this.mark[type]
+    if (mark === MARK_IGNORE) return
+    if (mark) {
+      this[mark](payload)
+    }
   }
 }
 

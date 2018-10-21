@@ -4,7 +4,6 @@ import { spy } from 'sinon'
 import cachedValueBackend from '../src/backends/cached-value'
 import inMemory from '../src/backends/memory'
 import { get, insert, replace, cached, cacheStats } from '../src/commands'
-import testBackend from '../src/spec/keyvalue-backend.spec'
 
 describe('borders-key-value/cached-value-backend', () => {
   const KEY = 'ID'
@@ -16,9 +15,7 @@ describe('borders-key-value/cached-value-backend', () => {
   let addedSquareSpy
 
   const execute = generatorFunction => () =>
-    new Context().use(backend, store).execute(generatorFunction())
-
-  testBackend(() => [backend, store])
+    new Context().use(store).use(backend).execute(generatorFunction())
 
   function* square(key) {
     const value = yield get(key)
