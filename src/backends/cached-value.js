@@ -2,13 +2,16 @@ import { EVENT_INVOKE } from 'borders'
 import { listenerName } from 'borders/backends'
 import { CACHED, CACHE_STATS, GET, INSERT, REMOVE, REPLACE, UPSERT } from '../commands'
 import { isPromise } from '../utils'
+import CachedValueConfig from './cached-value-config'
 
-const MARK_READ = '_markRead'
-const MARK_TOUCHED = '_markTouched'
-const MARK_IGNORE = '_markIgnore'
+const DEFAULT_CONFIG = new CachedValueConfig()
+  .markRead(GET)
+  .markTouched(REMOVE, INSERT, REPLACE, UPSERT)
+  .ignore(CACHED, CACHE_STATS)
+  .config()
 
 export default class CachedValue {
-  constructor() {
+  constructor(config) {
     this.cache = {}
     this.deps = {}
     this.stats = {
@@ -16,22 +19,14 @@ export default class CachedValue {
       misses: 0,
       evicts: 0,
     }
-    this.mark = {
-      [GET]: MARK_READ,
-      [REMOVE]: MARK_TOUCHED,
-      [INSERT]: MARK_TOUCHED,
-      [REPLACE]: MARK_TOUCHED,
-      [UPSERT]: MARK_TOUCHED,
-      [CACHED]: MARK_IGNORE,
-      [CACHE_STATS]: MARK_IGNORE,
-    }
+
+    this.mark = config ? Object.assign({}, DEFAULT_CONFIG, config.config()) : DEFAULT_CONFIG
   }
 
-  [MARK_TOUCHED](payload) {
+  _markTouched(key) {
     if (this.used) {
       throw new Error('Cannot modify KV store in a cache-calculation')
     }
-    const { key } = payload
     const revDeps = this.deps[key]
     if (revDeps) {
       const { cache } = this
@@ -52,9 +47,8 @@ export default class CachedValue {
     if (deps) Object.assign(this.used, deps)
   }
 
-  [MARK_READ](payload) {
+  _markRead(key) {
     if (!this.used) return
-    const { key } = payload
     this.used[key] = true
   }
 
@@ -106,9 +100,8 @@ export default class CachedValue {
 
   [listenerName(EVENT_INVOKE)](type, payload) {
     const mark = this.mark[type]
-    if (mark === MARK_IGNORE) return
     if (mark) {
-      this[mark](payload)
+      mark(this, payload)
     }
   }
 }
