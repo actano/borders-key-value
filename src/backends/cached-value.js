@@ -1,5 +1,5 @@
 import { CACHED, CACHE_STATS, GET, INSERT, REMOVE, REPLACE, UPSERT } from '../commands'
-import { assertNoArgs, isPromise } from '../utils'
+import { isPromise } from '../utils'
 
 class State {
   constructor() {
@@ -67,7 +67,7 @@ class State {
   }
 }
 
-export default assertNoArgs(() => Object.assign(Object.create(new State()), {
+export default () => Object.assign(Object.create(new State()), {
   async [CACHED](payload, ctx) {
     const { key, calculator } = payload
     if (this.cache[key]) {
@@ -115,4 +115,4 @@ export default assertNoArgs(() => Object.assign(Object.create(new State()), {
     const { hits, misses, evicts } = this.stats
     return { hits, misses, evicts }
   },
-}))
+})
