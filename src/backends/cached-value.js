@@ -1,7 +1,7 @@
 import { CACHED, CACHE_STATS, GET, INSERT, REMOVE, REPLACE, UPSERT } from '../commands'
 import { isPromise } from '../utils'
 
-class State {
+class CachedValue {
   constructor() {
     this.cache = {}
     this.deps = {}
@@ -65,9 +65,7 @@ class State {
     }
     return value
   }
-}
 
-export default () => Object.assign(Object.create(new State()), {
   async [CACHED](payload, ctx) {
     const { key, calculator } = payload
     if (this.cache[key]) {
@@ -84,35 +82,37 @@ export default () => Object.assign(Object.create(new State()), {
       Object.assign(this.used, subcontext.used)
     }
     return result
-  },
+  }
 
   [GET](payload, { next }) {
     this._markRead(payload)
     return next()
-  },
+  }
 
   [REMOVE](payload, { next }) {
     this._markTouched(payload)
     return next()
-  },
+  }
 
   [INSERT](payload, { next }) {
     this._markTouched(payload)
     return next()
-  },
+  }
 
   [REPLACE](payload, { next }) {
     this._markTouched(payload)
     return next()
-  },
+  }
 
   [UPSERT](payload, { next }) {
     this._markTouched(payload)
     return next()
-  },
+  }
 
   [CACHE_STATS]() {
     const { hits, misses, evicts } = this.stats
     return { hits, misses, evicts }
-  },
-})
+  }
+}
+
+export default () => new CachedValue()
