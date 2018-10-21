@@ -4,6 +4,8 @@ import { CACHED, CACHE_STATS, GET, INSERT, REMOVE, REPLACE, UPSERT } from '../co
 import { isPromise } from '../utils'
 import CachedValueConfig from './cached-value-config'
 
+const merge = (target, src) => src.forEach(k => target.add(k))
+
 const DEFAULT_CONFIG = new CachedValueConfig()
   .markRead(GET)
   .markTouched(REMOVE, INSERT, REPLACE, UPSERT)
@@ -12,8 +14,8 @@ const DEFAULT_CONFIG = new CachedValueConfig()
 
 export default class CachedValue {
   constructor(config) {
-    this.cache = {}
-    this.deps = {}
+    this._cache = new Map()
+    this._deps = new Map()
     this.stats = {
       hits: 0,
       misses: 0,
@@ -24,32 +26,31 @@ export default class CachedValue {
   }
 
   _markTouched(key) {
-    if (this.used) {
+    if (this._used) {
       throw new Error('Cannot modify KV store in a cache-calculation')
     }
-    const revDeps = this.deps[key]
+    const { _cache, _deps } = this
+    const revDeps = _deps.get(key)
     if (revDeps) {
-      const { cache } = this
       for (const k of Object.keys(revDeps)) {
-        if (cache[k]) {
+        if (_cache.delete(k)) {
           this.stats.evicts += 1
-          cache[k] = null
         }
       }
-      this.deps[key] = null
+      _deps.delete(key)
     }
   }
 
   _markHit(key) {
     this.stats.hits += 1
-    if (!this.used || !this.cache[key]) return
+    if (!this._used || !this.cache[key]) return
     const { deps } = this.cache[key]
-    if (deps) Object.assign(this.used, deps)
+    if (deps) merge(this._used, deps)
   }
 
   _markRead(key) {
-    if (!this.used) return
-    this.used[key] = true
+    if (!this._used) return
+    this._used.add(key)
   }
 
   * _calculate(calculator, key) {
@@ -57,15 +58,19 @@ export default class CachedValue {
     const value = yield* calculator(key)
     const entry = {
       value,
-      deps: this.used,
+      deps: this._used,
     }
 
-    for (const k of Object.keys(entry.deps)) {
-      const map = this.deps[k] || (this.deps[k] = {})
-      map[key] = true
-    }
+    const { _deps } = this
+    entry.deps.forEach((k) => {
+      if (_deps.has(k)) {
+        _deps.get(k)[key] = true
+      } else {
+        _deps.set(k, { [key]: true })
+      }
+    })
 
-    this.cache[key] = entry
+    this._cache.set(key, entry)
     if (isPromise(value)) {
       return value.then((v) => {
         entry.value = v
@@ -77,18 +82,19 @@ export default class CachedValue {
 
   async [CACHED](payload, ctx) {
     const { key, calculator } = payload
-    if (this.cache[key]) {
+    const entry = this._cache.get(key)
+    if (entry) {
       this._markHit(key)
-      return this.cache[key].value
+      return entry.value
     }
     const subcontext = Object.create(this, {
-      used: {
-        value: {},
+      _used: {
+        value: new Set(),
       },
     })
     const result = await ctx.execute(subcontext._calculate(calculator, key), subcontext)
-    if (this.used) {
-      Object.assign(this.used, subcontext.used)
+    if (this._used) {
+      merge(this._used, subcontext._used)
     }
     return result
   }
