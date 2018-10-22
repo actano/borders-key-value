@@ -3,30 +3,30 @@ import { isPromise } from '../utils'
 
 class CacheBackend {
   constructor() {
-    this.cache = {}
+    this._cache = new Map()
   }
 
   _promisedUpdate(key, value, result) {
     if (!isPromise(result)) {
-      this.cache[key] = value
+      this._cache.set(key, value)
       return result
     }
-    this.cache[key] = null
+    this._cache.delete(key)
     return result.then((returnValue) => {
-      this.cache[key] = value
+      this._cache.set(key, value)
       return returnValue
     })
   }
 
   [GET](payload, { next }) {
     const { key } = payload
-    let value = this.cache[key]
+    let value = this._cache.get(key)
     if (!value) {
-      this.cache[key] = next()
-      value = this.cache[key]
+      value = next()
+      this._cache.set(key, value)
       if (isPromise(value)) {
         return value.then((v) => {
-          this.cache[key] = v
+          this._cache.set(key, v)
           return v
         })
       }
@@ -56,7 +56,7 @@ class CacheBackend {
 
   [CACHE_STATS]() {
     return {
-      count: Object.keys(this.cache).length,
+      count: this._cache.size,
     }
   }
 }
