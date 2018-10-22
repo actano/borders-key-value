@@ -1,6 +1,6 @@
 import { EVENT_INVOKE } from 'borders'
 import { listenerName } from 'borders/backends'
-import { CACHED, CACHE_STATS, GET, INSERT, REMOVE, REPLACE, UPSERT } from '../commands'
+import { CACHED, CACHED_VALUE_STATS, GET, INSERT, REMOVE, REPLACE, UPSERT } from '../commands'
 import { isPromise } from '../utils'
 import CachedValueConfig from './cached-value-config'
 
@@ -9,7 +9,7 @@ const merge = (target, src) => src.forEach(k => target.add(k))
 const DEFAULT_CONFIG = new CachedValueConfig()
   .markRead(GET)
   .markTouched(REMOVE, INSERT, REPLACE, UPSERT)
-  .ignore(CACHED, CACHE_STATS)
+  .ignore(CACHED, CACHED_VALUE_STATS)
   .config()
 
 export default class CachedValue {
@@ -99,7 +99,7 @@ export default class CachedValue {
     return result
   }
 
-  [CACHE_STATS]() {
+  [CACHED_VALUE_STATS]() {
     const { hits, misses, evicts } = this.stats
     return { hits, misses, evicts }
   }

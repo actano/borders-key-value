@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import { spy } from 'sinon'
 import CachedValueBackend from '../src/backends/cached-value'
 import inMemory from '../src/backends/memory'
-import { get, insert, replace, cached, cacheStats } from '../src/commands'
+import { get, insert, replace, cached, cachedValueStats } from '../src/commands'
 
 describe('borders-key-value/cached-value-backend', () => {
   const KEY = 'ID'
@@ -40,7 +40,7 @@ describe('borders-key-value/cached-value-backend', () => {
     expect(yield cached(KEY, squareSpy)).to.equal(4)
     expect(yield cached(KEY, squareSpy)).to.equal(4)
     expect(squareSpy.callCount).to.equal(1)
-    expect(yield cacheStats()).to.include({ hits: 1, misses: 1, evicts: 0 })
+    expect(yield cachedValueStats()).to.include({ hits: 1, misses: 1, evicts: 0 })
   }))
 
   it('should return different value for different keys', execute(function* test() {
@@ -49,7 +49,7 @@ describe('borders-key-value/cached-value-backend', () => {
     expect(yield cached(KEY, squareSpy)).to.equal(4)
     expect(yield cached(OTHER_KEY, squareSpy)).to.equal(9)
     expect(squareSpy.callCount).to.equal(2)
-    expect(yield cacheStats()).to.include({ hits: 0, misses: 2, evicts: 0 })
+    expect(yield cachedValueStats()).to.include({ hits: 0, misses: 2, evicts: 0 })
   }))
 
   it('should invalidate value when used document is changed', execute(function* test() {
@@ -59,7 +59,7 @@ describe('borders-key-value/cached-value-backend', () => {
     expect(yield cached(KEY, squareSpy)).to.equal(9)
     expect(yield cached(KEY, squareSpy)).to.equal(9)
     expect(squareSpy.callCount).to.equal(2)
-    expect(yield cacheStats()).to.include({ hits: 1, misses: 2, evicts: 1 })
+    expect(yield cachedValueStats()).to.include({ hits: 1, misses: 2, evicts: 1 })
   }))
 
   it('should invalidate value when used cache-document is changed', execute(function* test() {
@@ -67,14 +67,14 @@ describe('borders-key-value/cached-value-backend', () => {
     yield insert(OTHER_KEY, 5)
     expect(yield cached(KEY, addedSquareSpy)).to.equal(29)
     expect(yield cached(KEY, addedSquareSpy)).to.equal(29)
-    expect(yield cacheStats()).to.include({ hits: 1, misses: 3, evicts: 0 })
+    expect(yield cachedValueStats()).to.include({ hits: 1, misses: 3, evicts: 0 })
 
     yield replace(OTHER_KEY, 6)
-    expect(yield cacheStats()).to.include({ hits: 1, misses: 3, evicts: 2 })
+    expect(yield cachedValueStats()).to.include({ hits: 1, misses: 3, evicts: 2 })
 
     expect(yield cached(KEY, addedSquareSpy)).to.equal(40)
     expect(yield cached(KEY, addedSquareSpy)).to.equal(40)
-    expect(yield cacheStats()).to.include({ hits: 2, misses: 6, evicts: 2 })
+    expect(yield cachedValueStats()).to.include({ hits: 2, misses: 6, evicts: 2 })
     expect(addedSquareSpy.callCount).to.equal(2)
   }))
 
