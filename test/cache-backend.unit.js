@@ -4,7 +4,7 @@ import Context from 'borders'
 import { cacheStats } from '../src/commands'
 import asyncBackend from '../src/spec/async-backend.spec'
 import testBackend from '../src/spec/keyvalue-backend.spec'
-import inMemory from '../src/backends/memory'
+import MemoryBackend from '../src/backends/memory'
 import CacheBackend from '../src/backends/cache'
 import insert from '../src/commands/insert'
 import get, { TYPE as GET } from '../src/commands/get'
@@ -52,7 +52,7 @@ describe('borders-key-value/cache-backend', () => {
   }
 
   beforeEach(() => {
-    store = inMemory()
+    store = new MemoryBackend()
     getSpy = spy(store, GET)
   })
 

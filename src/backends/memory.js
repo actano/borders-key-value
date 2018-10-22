@@ -11,7 +11,7 @@ import {
   KeyAlreadyExistsError,
 } from '../errors'
 
-class InMemory {
+export default class MemoryBackend {
   constructor() {
     this._store = new Map()
   }
@@ -39,5 +39,3 @@ class InMemory {
     this._store.set(key, value)
   }
 }
-
-export default () => new InMemory()
