@@ -1,6 +1,7 @@
 import { expect } from 'chai'
 import { spy } from 'sinon'
 import Context from 'borders'
+import { cacheStats } from '../src/commands'
 import asyncBackend from '../src/spec/async-backend.spec'
 import testBackend from '../src/spec/keyvalue-backend.spec'
 import inMemory from '../src/backends/memory'
@@ -37,6 +38,16 @@ describe('borders-key-value/cache-backend', () => {
       yield insert(ID, value)
       expect(yield get(ID)).to.equal(value)
       expect(getSpy.callCount).to.equal(0)
+    }))
+
+
+    it('should get cacheStats', execute(function* test() {
+      yield insert('id1', 'value')
+      yield insert('id2', 'value')
+      yield get('id1', 'value')
+      expect(yield cacheStats()).to.deep.equal({
+        count: 2,
+      })
     }))
   }
 

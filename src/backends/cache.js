@@ -1,4 +1,4 @@
-import { GET, REMOVE, INSERT, REPLACE, UPSERT } from '../commands'
+import { GET, REMOVE, INSERT, REPLACE, UPSERT, CACHE_STATS } from '../commands'
 import { isPromise } from '../utils'
 
 class CacheBackend {
@@ -52,6 +52,12 @@ class CacheBackend {
   [UPSERT](payload, { next }) {
     const { key, value } = payload
     return this._promisedUpdate(key, value, next())
+  }
+
+  [CACHE_STATS]() {
+    return {
+      count: Object.keys(this.cache).length,
+    }
   }
 }
 
