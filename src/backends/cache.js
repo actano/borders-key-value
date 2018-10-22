@@ -1,5 +1,5 @@
 import { GET, REMOVE, INSERT, REPLACE, UPSERT, CACHE_STATS } from '../commands'
-import { isPromise } from '../utils'
+import isPromise from '../is-promise'
 
 class CacheBackend {
   constructor() {

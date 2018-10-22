@@ -1,7 +1,7 @@
 import { EVENT_INVOKE } from 'borders'
 import { listenerName } from 'borders/backends'
 import { CACHED, CACHED_VALUE_STATS, GET, INSERT, REMOVE, REPLACE, UPSERT } from '../commands'
-import { isPromise } from '../utils'
+import isPromise from '../is-promise'
 import CachedValueConfig from './cached-value-config'
 
 const merge = (target, src) => src.forEach(k => target.add(k))
