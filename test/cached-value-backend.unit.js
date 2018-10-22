@@ -77,4 +77,40 @@ describe('borders-key-value/cached-value-backend', () => {
     expect(yield cacheStats()).to.include({ hits: 2, misses: 6, evicts: 2 })
     expect(addedSquareSpy.callCount).to.equal(2)
   }))
+
+  it('should cache recursive calculations', execute(function* () {
+    yield insert('doc-1', 1)
+    yield insert('doc-2', 2)
+    yield insert('doc-3', 3)
+    yield insert('doc-4', 4)
+
+    function* sum(n) {
+      const key = `doc-${n}`
+      return yield cached(key, function* () {
+        const value = yield get(key)
+
+        if (n > 1) {
+          // eslint-disable-next-line no-use-before-define
+          return value + (yield* sumSpy(n - 1))
+        }
+
+        return value
+      })
+    }
+
+    const sumSpy = spy(sum)
+
+    expect(yield* sumSpy(3)).to.equal(6)
+    expect(sumSpy.withArgs(3).callCount).to.equal(1)
+    expect(sumSpy.withArgs(2).callCount).to.equal(1)
+    expect(sumSpy.withArgs(1).callCount).to.equal(1)
+
+    sumSpy.resetHistory()
+
+    expect(yield* sumSpy(4)).to.equal(10)
+    expect(sumSpy.withArgs(4).callCount).to.equal(1)
+    expect(sumSpy.withArgs(3).callCount).to.equal(1)
+    expect(sumSpy.withArgs(2).callCount).to.equal(0)
+    expect(sumSpy.withArgs(1).callCount).to.equal(0)
+  }))
 })

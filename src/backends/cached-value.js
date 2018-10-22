@@ -43,8 +43,8 @@ export default class CachedValue {
 
   _markHit(key) {
     this.stats.hits += 1
-    if (!this._used || !this.cache[key]) return
-    const { deps } = this.cache[key]
+    if (!this._used) return
+    const { deps } = this._cache.get(key)
     if (deps) merge(this._used, deps)
   }
 
