@@ -13,31 +13,30 @@ import {
 
 class InMemory {
   constructor() {
-    this.store = {}
+    this._store = new Map()
   }
 
   [GET]({ key }) {
-    const value = this.store[key]
-    if (!value) throw new KeyNotFoundError(key)
-    return value
+    if (!this._store.has(key)) throw new KeyNotFoundError(key)
+    return this._store.get(key)
   }
 
   [REMOVE]({ key }) {
-    this.store[key] = null
+    this._store.delete(key)
   }
 
   [INSERT]({ key, value }) {
-    if (this.store[key]) throw new KeyAlreadyExistsError(key)
-    this.store[key] = value
+    if (this._store.has(key)) throw new KeyAlreadyExistsError(key)
+    this._store.set(key, value)
   }
 
   [REPLACE]({ key, value }) {
-    if (!this.store[key]) throw new KeyNotFoundError(key)
-    this.store[key] = value
+    if (!this._store.has(key)) throw new KeyNotFoundError(key)
+    this._store.set(key, value)
   }
 
   [UPSERT]({ key, value }) {
-    this.store[key] = value
+    this._store.set(key, value)
   }
 }
 
