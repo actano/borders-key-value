@@ -14,6 +14,9 @@
   "files": [
     "src",
     "lib",
+    "backends.js",
+    "commands.js",
+    "errors.js",
     "spec.js"
   ],
   "scripts": {
