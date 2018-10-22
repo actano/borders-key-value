@@ -1,6 +1,6 @@
 export * from './commands'
 export * from './errors'
 export { default as memoryBackend } from './backends/memory'
-export { default as cacheBackend } from './backends/cache'
+export { default as CacheBackend } from './backends/cache'
 export { default as CachedValueBackend } from './backends/cached-value'
 export { default as CachedValueConfig } from './backends/cached-value-config'

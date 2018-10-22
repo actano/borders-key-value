@@ -5,7 +5,7 @@ import { cacheStats } from '../src/commands'
 import asyncBackend from '../src/spec/async-backend.spec'
 import testBackend from '../src/spec/keyvalue-backend.spec'
 import inMemory from '../src/backends/memory'
-import cacheBackend from '../src/backends/cache'
+import CacheBackend from '../src/backends/cache'
 import insert from '../src/commands/insert'
 import get, { TYPE as GET } from '../src/commands/get'
 
@@ -57,10 +57,10 @@ describe('borders-key-value/cache-backend', () => {
   })
 
   describe('with sync backend', () => {
-    testCache(() => [cacheBackend(), store])
+    testCache(() => [new CacheBackend(), store])
   })
 
   describe('with async backend', () => {
-    testCache(() => [cacheBackend(), asyncBackend(store), store])
+    testCache(() => [new CacheBackend(), asyncBackend(store), store])
   })
 })

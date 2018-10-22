@@ -1,7 +1,7 @@
 import { GET, REMOVE, INSERT, REPLACE, UPSERT, CACHE_STATS } from '../commands'
 import isPromise from '../is-promise'
 
-class CacheBackend {
+export default class CacheBackend {
   constructor() {
     this._cache = new Map()
   }
@@ -60,5 +60,3 @@ class CacheBackend {
     }
   }
 }
-
-export default () => new CacheBackend()
