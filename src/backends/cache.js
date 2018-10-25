@@ -1,4 +1,6 @@
-import { GET, REMOVE, INSERT, REPLACE, UPSERT, CACHE_STATS } from '../commands'
+import {
+  GET, REMOVE, INSERT, REPLACE, UPSERT, CACHE_STATS,
+} from '../commands'
 import isPromise from '../is-promise'
 
 export default class CacheBackend {

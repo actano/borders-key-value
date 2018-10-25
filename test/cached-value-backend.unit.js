@@ -3,7 +3,9 @@ import { expect } from 'chai'
 import { spy } from 'sinon'
 import CachedValueBackend from '../src/backends/cached-value'
 import MemoryBackend from '../src/backends/memory'
-import { get, insert, replace, cached, cachedValueStats } from '../src/commands'
+import {
+  get, insert, replace, cached, cachedValueStats,
+} from '../src/commands'
 
 describe('borders-key-value/cached-value-backend', () => {
   const KEY = 'ID'
