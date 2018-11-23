@@ -6,6 +6,8 @@ import isPromise from '../is-promise'
 export default class CacheBackend {
   constructor() {
     this._cache = new Map()
+    this._cacheHits = 0
+    this._cacheMisses = 0
   }
 
   _promisedUpdate(key, value, result) {
@@ -24,6 +26,7 @@ export default class CacheBackend {
     const { key } = payload
     let value = this._cache.get(key)
     if (!value) {
+      this._cacheMisses += 1
       value = next()
       this._cache.set(key, value)
       if (isPromise(value)) {
@@ -32,6 +35,8 @@ export default class CacheBackend {
           return v
         })
       }
+    } else {
+      this._cacheHits += 1
     }
     return value
   }
@@ -59,6 +64,8 @@ export default class CacheBackend {
   [CACHE_STATS]() {
     return {
       count: this._cache.size,
+      cacheHits: this._cacheHits,
+      cacheMisses: this._cacheMisses,
     }
   }
 }
