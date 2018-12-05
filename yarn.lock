@@ -722,9 +722,9 @@ binary-extensions@^1.0.0:
   version "1.12.0"
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-1.12.0.tgz#c2d780f53d45bba8317a8902d4ceeaf3a6385b14"
 
-borders@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/borders/-/borders-2.0.0.tgz#84d45e53b0b712b9fb6e6e1304e2f577a1eb5579"
+borders@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/borders/-/borders-2.1.0.tgz#d5669cb43d74a88e0760dd23bd0eab005baff024"
 
 brace-expansion@^1.1.7:
   version "1.1.11"
