@@ -12,7 +12,7 @@ const execute = generatorFunction => () =>
     .use(new MemoryBackend())
     .execute(generatorFunction())
 
-describe.only('borders-key-value/no-cas-backend', () => {
+describe('borders-key-value/no-cas-backend', () => {
   it('should return null as check-and-set value', execute(function* test() {
     yield insert('id1', 'value1')
     const cas = yield getCas('id1')
