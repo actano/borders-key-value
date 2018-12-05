@@ -47,6 +47,8 @@ describe('borders-key-value/cache-backend', () => {
       yield get('id1', 'value')
       expect(yield cacheStats()).to.deep.equal({
         count: 2,
+        cacheHits: 1,
+        cacheMisses: 0,
       })
     }))
   }
