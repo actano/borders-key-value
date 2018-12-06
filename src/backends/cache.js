@@ -1,5 +1,5 @@
 import {
-  GET, REMOVE, INSERT, REPLACE, UPSERT, CACHE_STATS,
+  GET, REMOVE, INSERT, REPLACE, UPSERT, CACHE_STATS, GET_CAS,
 } from '../commands'
 import isPromise from '../is-promise'
 
@@ -67,5 +67,11 @@ export default class CacheBackend {
       cacheHits: this._cacheHits,
       cacheMisses: this._cacheMisses,
     }
+  }
+
+  // This method doesn't need `this`, but satisfies the interface of the class.
+  // eslint-disable-next-line class-methods-use-this
+  [GET_CAS](payload, { next }) {
+    return next()
   }
 }

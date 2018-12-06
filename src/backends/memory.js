@@ -4,6 +4,7 @@ import {
   INSERT,
   REPLACE,
   UPSERT,
+  GET_CAS,
 } from '../commands'
 
 import {
@@ -37,5 +38,11 @@ export default class MemoryBackend {
 
   [UPSERT]({ key, value }) {
     this._store.set(key, value)
+  }
+
+  // this backend is a noop implementation and needs no access to `this`
+  // eslint-disable-next-line class-methods-use-this
+  [GET_CAS]() {
+    return null
   }
 }
