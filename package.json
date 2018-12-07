@@ -33,7 +33,7 @@
     "@babel/node": "^7.0.0",
     "@babel/preset-env": "^7.1.0",
     "@babel/register": "^7.0.0",
-    "borders": "^2.1.0",
+    "borders": "^2.1.1",
     "chai": "^4.0.2",
     "eslint": "^5.7.0",
     "eslint-config-actano-base": "^4.0.0",
