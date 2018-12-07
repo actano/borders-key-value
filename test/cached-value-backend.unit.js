@@ -1,11 +1,12 @@
 import Context from 'borders'
 import { expect } from 'chai'
 import { spy } from 'sinon'
-import CachedValueBackend, { CycleError } from '../src/backends/cached-value'
+import CachedValueBackend from '../src/backends/cached-value'
 import MemoryBackend from '../src/backends/memory'
 import {
   get, insert, replace, cached, cachedValueStats,
 } from '../src/commands'
+import { CycleError } from '../src/errors'
 
 describe('borders-key-value/cached-value-backend', () => {
   const KEY = 'ID'

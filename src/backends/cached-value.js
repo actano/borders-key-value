@@ -3,6 +3,7 @@ import { listenerName } from 'borders/backends'
 import {
   CACHED, CACHED_VALUE_STATS, GET, INSERT, REMOVE, REPLACE, UPSERT,
 } from '../commands'
+import { CycleError } from '../errors'
 import CachedValueConfig from './cached-value-config'
 
 const DEFAULT_CONFIG = new CachedValueConfig()
@@ -10,15 +11,6 @@ const DEFAULT_CONFIG = new CachedValueConfig()
   .markTouched(REMOVE, INSERT, REPLACE, UPSERT)
   .ignore(CACHED, CACHED_VALUE_STATS)
   .config()
-
-export class CycleError extends Error {
-  constructor(chain) {
-    super()
-    this.message = 'Cycle detected'
-    this.chain = Array.from(chain)
-  }
-}
-CycleError.prototype.name = CycleError.name
 
 export default class CachedValue {
   constructor(config) {

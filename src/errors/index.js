@@ -6,7 +6,6 @@ export class KeyNotFoundError extends Error {
 
 KeyNotFoundError.prototype.name = 'KeyNotFoundError'
 
-
 export class KeyAlreadyExistsError extends Error {
   constructor(key) {
     super(String(key))
@@ -14,3 +13,11 @@ export class KeyAlreadyExistsError extends Error {
 }
 
 KeyAlreadyExistsError.prototype.name = 'KeyAlreadyExistsError'
+
+export class CycleError extends Error {
+  constructor(cycle) {
+    super('Cycle detected')
+    this.cycle = Array.from(cycle)
+  }
+}
+CycleError.prototype.name = CycleError.name
