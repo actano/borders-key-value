@@ -5,35 +5,45 @@ import {
 } from '../commands'
 import CachedValueConfig from './cached-value-config'
 
-const merge = (target, src) => src.forEach(k => target.add(k))
-
 const DEFAULT_CONFIG = new CachedValueConfig()
   .markRead(GET)
   .markTouched(REMOVE, INSERT, REPLACE, UPSERT)
   .ignore(CACHED, CACHED_VALUE_STATS)
   .config()
 
+export class CycleError extends Error {
+  constructor(chain) {
+    super()
+    this.message = 'Cycle detected'
+    this.chain = Array.from(chain)
+  }
+}
+CycleError.prototype.name = CycleError.name
+
 export default class CachedValue {
   constructor(config) {
-    this._cache = new Map()
-    this._deps = new Map()
+    // the cache itself
+    this._cache = new Map() // key -> CacheEntry
+    // reverse dependencies, if write to a key in this map, all cache entries in set must be cleared
+    this._deps = new Map() // key -> Set(key)
     this.stats = {
       hits: 0,
       misses: 0,
       evicts: 0,
     }
+    this.chain = new Set()
 
     this.mark = config ? Object.assign({}, DEFAULT_CONFIG, config.config()) : DEFAULT_CONFIG
   }
 
   _markTouched(key) {
-    if (this._used) {
+    if (this.trackUsage) {
       throw new Error('Cannot modify KV store in a cache-calculation')
     }
     const { _cache, _deps } = this
     const revDeps = _deps.get(key)
     if (revDeps) {
-      for (const k of Object.keys(revDeps)) {
+      for (const k of revDeps) {
         if (_cache.delete(k)) {
           this.stats.evicts += 1
         }
@@ -42,58 +52,61 @@ export default class CachedValue {
     }
   }
 
-  _markHit(entry) {
-    this.stats.hits += 1
-    if (!this._used) return
-    const { deps } = entry
-    if (deps) merge(this._used, deps)
-  }
-
   _markRead(key) {
-    if (!this._used) return
-    this._used.add(key)
+    if (!this.trackUsage) return
+    this.trackUsage(key)
   }
 
-  * _calculate(calculator, key) {
-    this.stats.misses += 1
-    const value = yield* calculator(key)
-    const entry = {
-      value,
-      deps: this._used,
-    }
-
-    const { _deps } = this
-    entry.deps.forEach((k) => {
-      if (_deps.has(k)) {
-        _deps.get(k)[key] = true
-      } else {
-        _deps.set(k, { [key]: true })
-      }
-    })
-
-    return entry
-  }
-
-  async [CACHED](payload, ctx) {
-    const { key, calculator } = payload
+  _hit(key) {
     const entry = this._cache.get(key)
-    if (entry) {
-      this._markHit(await entry)
-      const { value } = await entry
-      return value
+    this.stats.hits += 1
+    if (this.trackUsage) {
+      for (const k of entry.deps) {
+        this.trackUsage(k)
+      }
     }
+    return entry.value
+  }
+
+  [CACHED]({ key, calculator }, { execute }) {
+    if (this.chain.has(key)) {
+      throw new CycleError(this.chain)
+    }
+    if (this._cache.has(key)) {
+      return this._hit(key)
+    }
+
+    const trackUsageInParent = this.trackUsage || (() => {})
+    const trackRevDep = (k) => {
+      if (this._deps.has(k)) {
+        this._deps.get(k).add(key)
+      } else {
+        const set = new Set([key])
+        this._deps.set(k, set)
+      }
+    }
+
+    this.stats.misses += 1
+    const deps = new Set()
+    const entry = { deps }
+    const trackUsage = (k) => { deps.add(k) }
+    const chain = new Set(this.chain)
+    chain.add(key)
     const subcontext = Object.create(this, {
-      _used: {
-        value: new Set(),
+      trackUsage: {
+        value: (k) => {
+          trackUsage(k)
+          trackUsageInParent(k)
+          trackRevDep(k)
+        },
+      },
+      chain: {
+        value: chain,
       },
     })
-    const entryPromise = ctx.execute(subcontext._calculate(calculator, key), subcontext)
-    this._cache.set(key, entryPromise)
-    const { value } = await entryPromise
-    if (this._used) {
-      merge(this._used, subcontext._used)
-    }
-    return value
+    this._cache.set(key, entry)
+    entry.value = execute(calculator(key), subcontext)
+    return entry.value
   }
 
   [CACHED_VALUE_STATS]() {

@@ -1,7 +1,7 @@
 import Context from 'borders'
 import { expect } from 'chai'
 import { spy } from 'sinon'
-import CachedValueBackend from '../src/backends/cached-value'
+import CachedValueBackend, { CycleError } from '../src/backends/cached-value'
 import MemoryBackend from '../src/backends/memory'
 import {
   get, insert, replace, cached, cachedValueStats,
@@ -127,5 +127,16 @@ describe('borders-key-value/cached-value-backend', () => {
     expect(sumSpy.withArgs(3).callCount).to.equal(1)
     expect(sumSpy.withArgs(2).callCount).to.equal(0)
     expect(sumSpy.withArgs(1).callCount).to.equal(0)
+  }))
+
+  it('should throw on cycles', execute(function* () {
+    const calc = key => cached(String(key), function* () {
+      return yield calc(2 - key)
+    })
+    try {
+      yield calc(1)
+    } catch (e) {
+      expect(e).to.be.instanceOf(CycleError)
+    }
   }))
 })
