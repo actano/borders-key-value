@@ -25,8 +25,8 @@ describe('borders-key-value/cached-value-backend', () => {
   }
 
   function* addedSquare(key) {
-    const value1 = yield cached(key, squareSpy)
-    const value2 = yield cached(OTHER_KEY, squareSpy)
+    const value1 = yield cached(key + '^2', () => squareSpy(key))
+    const value2 = yield cached(OTHER_KEY + '^2', () => squareSpy(OTHER_KEY))
     return value1 + value2
   }
 
@@ -67,16 +67,29 @@ describe('borders-key-value/cached-value-backend', () => {
   it('should invalidate value when used cache-document is changed', execute(function* test() {
     yield insert(KEY, 2)
     yield insert(OTHER_KEY, 5)
-    expect(yield cached(KEY, addedSquareSpy)).to.equal(29)
-    expect(yield cached(KEY, addedSquareSpy)).to.equal(29)
+    const k = `${KEY}^2 + ${OTHER_KEY}^2`
+    // 1. miss ID^2 + OTHER_ID^2
+    // 2. miss ID^2
+    // 3. miss OTHER_ID^2
+    expect(yield cached(k, () => addedSquareSpy(KEY))).to.equal(29)
+    expect(yield cachedValueStats()).to.include({ hits: 0, misses: 3, evicts: 0 })
+    // 1. hit ID^2 + OTHER_ID^2
+    expect(yield cached(k, () => addedSquareSpy(KEY))).to.equal(29)
     expect(yield cachedValueStats()).to.include({ hits: 1, misses: 3, evicts: 0 })
 
+    // 1. evict ID^2 + OTHER_ID^2
+    // 2. evict ID^2
     yield replace(OTHER_KEY, 6)
     expect(yield cachedValueStats()).to.include({ hits: 1, misses: 3, evicts: 2 })
 
-    expect(yield cached(KEY, addedSquareSpy)).to.equal(40)
-    expect(yield cached(KEY, addedSquareSpy)).to.equal(40)
-    expect(yield cachedValueStats()).to.include({ hits: 2, misses: 6, evicts: 2 })
+    // 4. miss ID^2 + OTHER_ID^2
+    // 2. hit ID^2
+    // 5. miss OTHER_ID^2
+    expect(yield cached(k, () => addedSquareSpy(KEY))).to.equal(40)
+    expect(yield cachedValueStats()).to.include({ hits: 2, misses: 5, evicts: 2 })
+    // 3. hit ID^2 + OTHER_ID^2
+    expect(yield cached(k, () => addedSquareSpy(KEY))).to.equal(40)
+    expect(yield cachedValueStats()).to.include({ hits: 3, misses: 5, evicts: 2 })
     expect(addedSquareSpy.callCount).to.equal(2)
   }))
 

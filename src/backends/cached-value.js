@@ -3,7 +3,6 @@ import { listenerName } from 'borders/backends'
 import {
   CACHED, CACHED_VALUE_STATS, GET, INSERT, REMOVE, REPLACE, UPSERT,
 } from '../commands'
-import isPromise from '../is-promise'
 import CachedValueConfig from './cached-value-config'
 
 const merge = (target, src) => src.forEach(k => target.add(k))
@@ -43,10 +42,10 @@ export default class CachedValue {
     }
   }
 
-  _markHit(key) {
+  _markHit(entry) {
     this.stats.hits += 1
     if (!this._used) return
-    const { deps } = this._cache.get(key)
+    const { deps } = entry
     if (deps) merge(this._used, deps)
   }
 
@@ -72,33 +71,29 @@ export default class CachedValue {
       }
     })
 
-    this._cache.set(key, entry)
-    if (isPromise(value)) {
-      return value.then((v) => {
-        entry.value = v
-        return v
-      })
-    }
-    return value
+    return entry
   }
 
   async [CACHED](payload, ctx) {
     const { key, calculator } = payload
     const entry = this._cache.get(key)
     if (entry) {
-      this._markHit(key)
-      return entry.value
+      this._markHit(await entry)
+      const { value } = await entry
+      return value
     }
     const subcontext = Object.create(this, {
       _used: {
         value: new Set(),
       },
     })
-    const result = await ctx.execute(subcontext._calculate(calculator, key), subcontext)
+    const entryPromise = ctx.execute(subcontext._calculate(calculator, key), subcontext)
+    this._cache.set(key, entryPromise)
+    const { value } = await entryPromise
     if (this._used) {
       merge(this._used, subcontext._used)
     }
-    return result
+    return value
   }
 
   [CACHED_VALUE_STATS]() {
