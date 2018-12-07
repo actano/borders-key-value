@@ -25,8 +25,8 @@ describe('borders-key-value/cached-value-backend', () => {
   }
 
   function* addedSquare(key) {
-    const value1 = yield cached(key + '^2', () => squareSpy(key))
-    const value2 = yield cached(OTHER_KEY + '^2', () => squareSpy(OTHER_KEY))
+    const value1 = yield cached(`${key}^2`, () => squareSpy(key))
+    const value2 = yield cached(`${OTHER_KEY}^2`, () => squareSpy(OTHER_KEY))
     return value1 + value2
   }
 
