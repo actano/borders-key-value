@@ -15,9 +15,13 @@ export class KeyAlreadyExistsError extends Error {
 KeyAlreadyExistsError.prototype.name = 'KeyAlreadyExistsError'
 
 export class CycleError extends Error {
-  constructor(cycle) {
-    super('Cycle detected')
+  constructor(key, cycle) {
+    super(`Cycle detected when entering ${key}`)
     this.cycle = Array.from(cycle)
+  }
+
+  toString() {
+    return `${super.toString()} [${this.cycle}]`
   }
 }
 CycleError.prototype.name = CycleError.name

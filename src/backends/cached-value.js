@@ -62,7 +62,7 @@ export default class CachedValue {
 
   [CACHED]({ key, calculator }, { execute }) {
     if (this.chain.has(key)) {
-      throw new CycleError(this.chain)
+      throw new CycleError(key, this.chain)
     }
     if (this._cache.has(key)) {
       return this._hit(key)
