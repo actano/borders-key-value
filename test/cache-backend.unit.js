@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import { spy } from 'sinon'
 import Context from 'borders'
-import { cacheStats, getCas } from '../src/commands'
+import { cacheStats } from '../src/commands'
 import asyncBackend from '../src/spec/async-backend.spec'
 import testBackend from '../src/spec/keyvalue-backend.spec'
 import MemoryBackend from '../src/backends/memory'
@@ -50,13 +50,6 @@ describe('borders-key-value/cache-backend', () => {
         cacheHits: 1,
         cacheMisses: 0,
       })
-    }))
-
-    it('should forward cas value lookup', execute(function* test() {
-      yield insert('id1', 'value')
-      const cas = yield getCas('id1')
-
-      expect(cas).to.equal(null)
     }))
   }
 
