@@ -30,7 +30,7 @@
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.4.0",
-    "@babel/node": "^7.0.0",
+    "@babel/node": "^7.2.2",
     "@babel/preset-env": "^7.1.0",
     "@babel/register": "^7.0.0",
     "borders": "^2.1.0",
