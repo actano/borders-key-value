@@ -35,7 +35,7 @@
     "@babel/register": "^7.0.0",
     "borders": "^2.1.0",
     "chai": "^4.0.2",
-    "eslint": "^5.7.0",
+    "eslint": "^6.7.2",
     "eslint-config-actano-base": "^4.0.0",
     "eslint-plugin-import": "^2.7.0",
     "mocha": "^5.0.1",
