@@ -39,7 +39,7 @@
     "eslint-config-actano-base": "^4.0.0",
     "eslint-plugin-import": "^2.7.0",
     "mocha": "^5.0.1",
-    "sinon": "^7.0.0"
+    "sinon": "^8.0.2"
   },
   "peerDependencies": {
     "borders": "^2.0.0"
